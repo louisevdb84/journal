@@ -1,12 +1,27 @@
 'use strict';
 
-/* eslint-env node, es6 */
-
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
+const bcrypt = require('bcrypt-nodejs');
 const watson = require('watson-developer-cloud');
 const vcapServices = require('vcap_services');
 const cors = require('cors')
+const knex = require('knex');
+
+const signin = require('./controllers/signin');
+const register = require('./controllers/register');
+
+
+
+const db = knex({
+  client: 'pg',
+  connection: {
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,  
+    
+  }
+});
 
 // on bluemix, enable rate-limiting and force https
 if (process.env.VCAP_SERVICES) {
@@ -30,7 +45,8 @@ if (process.env.VCAP_SERVICES) {
 }
 
 app.use(express.static(__dirname + '/static'));
-app.use(cors())
+app.use(cors());
+app.use(bodyParser.json());
 
 // token endpoints
 // **Warning**: these endpoints should probably be guarded with additional authentication & authorization for production use
@@ -63,6 +79,11 @@ app.use('/api/speech-to-text/token', function(req, res) {
     }
   );
 });
+
+
+app.get('/', (req, res)=> { res.send(console.log("RUNNING")) })
+app.post('/signin', signin.handleSignin(db, bcrypt));
+app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) });
 
 const port = process.env.PORT || process.env.VCAP_APP_PORT || 3002
 app.listen(port, function() {
