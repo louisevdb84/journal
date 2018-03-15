@@ -1,20 +1,35 @@
 const handleRegister = (req, res, db, bcrypt) => {
-    const { id, username, password } = req.body;
-    if (!id || !username || !password) {
+    const { name, surname, username, password } = req.body;
+    if (!username || !password) {
       return res.status(400).json('incorrect form submission');
-    }
-    console.log(id + username + password);
-    const hash = bcrypt.hashSync(password);
-      db.insert({
-          id: id,
+    }    
+  const hash = bcrypt.hashSync(password);
+  
+      db.transaction(trx => {
+        trx.insert({          
           hash: hash,
           username: username
         })
-        .into('login')              
+        .into('login')
+        .returning('username')
+        .then(loginUser => {
+          return trx('users')
+            .returning('*')
+            .insert({          
+              username: loginUser[0],
+              name: name,
+              surname: surname
+            })
+            .then(user => {
+              res.json(user[0]);
+            })
+        })
+        .then(trx.commit)
+        .catch(trx.rollback)
+      })
       .catch(err => res.status(400).json('unable to register'))
-  }
-  
+      }
+      
   module.exports = {
     handleRegister: handleRegister
   };
-  

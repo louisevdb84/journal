@@ -11,15 +11,16 @@ const knex = require('knex');
 
 const signin = require('./controllers/signin');
 const register = require('./controllers/register');
+const journalEntries = require('./controllers/journalEntries');
+const getJournalEntries = require('./controllers/getJournalEntries');
 
 
 
 const db = knex({
   client: 'pg',
   connection: {
-    connectionString: process.env.DATABASE_URL,
-    ssl: true,  
-    
+    connectionString: process.env.DATABASE_URL,    
+    ssl: true,      
   }
 });
 
@@ -52,14 +53,12 @@ app.use(bodyParser.json());
 // **Warning**: these endpoints should probably be guarded with additional authentication & authorization for production use
 
 // speech to text token endpoint
-var sttAuthService = new watson.AuthorizationV1(
-  //   username: process.env.SPEECH_TO_TEXT_USERNAME, // or hard-code credentials here
-    //   password: process.env.SPEECH_TO_TEXT_PASSWORD
+var sttAuthService = new watson.AuthorizationV1(  
   Object.assign(
     {
-  "url": "https://stream.watsonplatform.net/speech-to-text/api",
-  "username": "82d60956-9e30-423d-a4c8-9f67b26ad070",
-  "password": "k3UsqRPyzsLX"
+    "url": "https://stream.watsonplatform.net/speech-to-text/api",
+     username: process.env.SPEECH_TO_TEXT_USERNAME, // or hard-code credentials here
+     password: process.env.SPEECH_TO_TEXT_PASSWORD
 },
     vcapServices.getCredentials('speech_to_text') // pulls credentials from environment in bluemix, otherwise returns {}
   )
@@ -84,6 +83,9 @@ app.use('/api/speech-to-text/token', function(req, res) {
 app.get('/', (req, res)=> { res.send(console.log("RUNNING")) })
 app.post('/signin', signin.handleSignin(db, bcrypt));
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) });
+app.post('/journal', (req, res) => { journalEntries.handleJournalEntries(req, res, db) });
+app.get('/getjournal/:id', (req, res) => { getJournalEntries.handleGetJournalEntries(req, res, db)})
+
 
 const port = process.env.PORT || process.env.VCAP_APP_PORT || 3002
 app.listen(port, function() {
@@ -107,3 +109,6 @@ if (!process.env.VCAP_SERVICES) {
     console.log('Secure server live at https://localhost:%s/', HTTPS_PORT);
   });
 }
+
+
+
