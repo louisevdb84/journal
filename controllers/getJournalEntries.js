@@ -1,8 +1,7 @@
 const handleGetJournalEntries = (req, res, db) => {
   
   var { username } = req.params;    
-  username = "'" + username + "'";
-  console.log(username);
+  //username = "'" + username + "'";  
   db('journal').where('username', username)
       .then(entry => {
         res.json(entry);
