@@ -84,7 +84,7 @@ app.get('/', (req, res)=> { res.send(console.log("RUNNING")) })
 app.post('/signin', signin.handleSignin(db, bcrypt));
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) });
 app.post('/journal', (req, res) => { journalEntries.handleJournalEntries(req, res, db) });
-app.get('/getjournal/:id', (req, res) => { getJournalEntries.handleGetJournalEntries(req, res, db)})
+app.get('/getjournal/:username', (req, res) => { getJournalEntries.handleGetJournalEntries(req, res, db)})
 
 
 const port = process.env.PORT || process.env.VCAP_APP_PORT || 3002
