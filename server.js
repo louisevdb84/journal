@@ -57,8 +57,10 @@ var sttAuthService = new watson.AuthorizationV1(
   Object.assign(
     {
     "url": "https://stream.watsonplatform.net/speech-to-text/api",
-     username: process.env.SPEECH_TO_TEXT_USERNAME, // or hard-code credentials here
-     password: process.env.SPEECH_TO_TEXT_PASSWORD
+      username: process.env.SPEECH_TO_TEXT_USERNAME, // or hard-code credentials here
+      password: process.env.SPEECH_TO_TEXT_PASSWORD
+    // username: "BLEH", // or hard-code credentials here
+    //  password: "BLEH"
 },
     vcapServices.getCredentials('speech_to_text') // pulls credentials from environment in bluemix, otherwise returns {}
   )
