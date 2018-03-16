@@ -1,7 +1,7 @@
 const handleGetJournalEntries = (req, res, db) => {
     const { id } = req.params;
     console.log(id);
-    db.select('*').from('journal')//.where({id})
+    db.select('*').from('journal').where({id})
       .then(entry => {
         if (entry.length) {
           res.json(entry)
