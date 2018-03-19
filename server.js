@@ -13,13 +13,12 @@ const signin = require('./controllers/signin');
 const register = require('./controllers/register');
 const journalEntries = require('./controllers/journalEntries');
 const getJournalEntries = require('./controllers/getJournalEntries');
-
-
+const journalDelete = require('./controllers/journalDelete');
 
 const db = knex({
   client: 'pg',
   connection: {
-    connectionString: process.env.DATABASE_URL,    
+    connectionString: process.env.DATABASE_URL,        
     ssl: true,      
   }
 });
@@ -58,9 +57,7 @@ var sttAuthService = new watson.AuthorizationV1(
     {
     "url": "https://stream.watsonplatform.net/speech-to-text/api",
       username: process.env.SPEECH_TO_TEXT_USERNAME, // or hard-code credentials here
-      password: process.env.SPEECH_TO_TEXT_PASSWORD
-      // username: "BLEH", // or hard-code credentials here
-      // password: "BLEH"
+      password: process.env.SPEECH_TO_TEXT_PASSWORD      
 },
     vcapServices.getCredentials('speech_to_text') // pulls credentials from environment in bluemix, otherwise returns {}
   )
@@ -86,7 +83,9 @@ app.get('/', (req, res)=> { res.send(console.log("RUNNING")) })
 app.post('/signin', signin.handleSignin(db, bcrypt));
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) });
 app.post('/journal', (req, res) => { journalEntries.handleJournalEntries(req, res, db) });
-app.get('/getjournal/:username', (req, res) => { getJournalEntries.handleGetJournalEntries(req, res, db)})
+//app.get('/getjournal/:username', (req, res) => { getJournalEntries.handleGetJournalEntries(req, res, db) })
+app.post('/getjournal', (req, res) => { getJournalEntries.handleGetJournalEntries(req, res, db) })
+app.post('/delete', (req, res) => { journalDelete.handleJournalDelete(req, res, db)})
 
 
 const port = process.env.PORT || process.env.VCAP_APP_PORT || 3002
@@ -111,6 +110,5 @@ if (!process.env.VCAP_SERVICES) {
     console.log('Secure server live at https://localhost:%s/', HTTPS_PORT);
   });
 }
-
 
 
