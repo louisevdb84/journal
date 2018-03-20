@@ -16,7 +16,7 @@ const handleJournalEntries = (req, res, db) => {
         
             .then(entry => {
                 res.json({
-                    id: id,
+                    success: true,
                     message: "Successfully added journal entry"
                 });
             })
