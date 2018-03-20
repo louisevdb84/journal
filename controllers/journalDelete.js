@@ -7,7 +7,7 @@ const handleJournalDelete = (req, res, db) => {
     db('journal').where('id', id)
         .del()    
             .then(entry => {
-                res.json('Entry deleted');
+                res.json({ id:  id  } );
             })
             .catch(err => res.status(400).json('Unable to delete journal entry'))    
 }    
