@@ -1,7 +1,7 @@
 const handleSignin = (db, bcrypt) => (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
-      return res.status(400).json('incorrect form submission');
+      return res.status(400).json('Username and password are required');
   }
 
     db.select('username', 'hash').from('login')
@@ -15,12 +15,12 @@ const handleSignin = (db, bcrypt) => (req, res) => {
             .then(user => {
               res.json(user[0])
             })
-            .catch(err => res.status(400).json('unable to get user'))
+            .catch(err => res.status(400).json('Unable to retrieve user'))
         } else {
-          res.status(400).json('wrong credentials')
+          res.status(400).json('Invalid Password')
         }
       })
-      .catch(err => res.status(400).json('wrong credentials'))
+      .catch(err => res.status(400).json('The username and password are not valid'))
   }
   
   module.exports = {

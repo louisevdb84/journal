@@ -2,7 +2,7 @@ const handleGetJournalEntries = (req, res, db) => {
   const { username, searchString, searchDate } = req.body; 
   
   if (!username) {
-    return res.status(400).json('incorrect form submission');
+    return res.status(400).json('Username must be supplied');
   }
   if (searchDate === "" || !searchDate)  
   {
@@ -16,10 +16,10 @@ const handleGetJournalEntries = (req, res, db) => {
         if (entry.length) {
           res.json(entry)
         } else {
-          res.status(400).json('Not found')
+          res.status(400).json('No journal entries')
         }
       })
-      .catch(err => res.status(400).json('error getting journalEntries'))
+      .catch(err => res.status(400).json('Error getting journalEntries'))
   }  
   // else if (searchDate)
   // {
