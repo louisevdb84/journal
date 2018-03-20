@@ -15,7 +15,10 @@ const handleJournalEntries = (req, res, db) => {
         })
         
             .then(entry => {
-                res.json("Successfully added journal entry");
+                res.json({
+                    id: id,
+                    message: "Successfully added journal entry"
+                });
             })
             .catch(err => res.status(400).json('Unable to insert journal entry'))
     }
@@ -29,7 +32,7 @@ const handleJournalEntries = (req, res, db) => {
         })
         
             .then(entry => {
-                res.json('Successfully updated journal entry');
+                res.json({id: id});
             })
             .catch(err => res.status(400).json('unable to edit journal entry'))
     }
