@@ -5,8 +5,7 @@ const handleGetJournalEntries = (req, res, db) => {
     return res.status(400).json('Username must be supplied');
   }
   if (searchDate === "" || !searchDate)  
-  {
-    //db.select(db.raw('entrydate::TIMESTAMP [WITHOUT TIMEZONE]')).from('journal')
+  {    
     db.select().from('journal')  
       .where('username', username)
       .andWhere('topic', 'like', '%' + searchString + '%')
@@ -21,20 +20,19 @@ const handleGetJournalEntries = (req, res, db) => {
       })
       .catch(err => res.status(400).json('Error getting journalEntries'))
   }  
-  // else if (searchDate)
-  // {
-  //   console.log(searchDate);
-  //   db('journal').where('username', username)  
-  //   .andWhere('entrydate', searchDate)
-  //     .then(entry => {
-  //       if (entry.length) {
-  //         res.json(entry)
-  //       } else {
-  //         res.status(400).json('Not found')
-  //       }
-  //     })
-  //     .catch(err => res.status(400).json('error getting journalEntries'))
-  // }  
+  else if (searchDate)
+  {    
+    db('journal').where('username', username)  
+    .andWhere('entrydate', searchDate)
+      .then(entry => {
+        if (entry.length) {
+          res.json(entry)
+        } else {
+          res.status(400).json('No journal entries')
+        }
+      })
+      .catch(err => res.status(400).json('error getting journalEntries'))
+  }  
   
   }
   
