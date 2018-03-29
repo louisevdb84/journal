@@ -32,7 +32,11 @@ const handleJournalEntries = (req, res, db) => {
         })
         
             .then(entry => {
-                res.json({id: id});
+                res.json({
+                    id: id,
+                    success: true,    
+                    message: "Successfully updated journal entry"
+                });
             })
             .catch(err => res.status(400).json('unable to edit journal entry'))
     }
